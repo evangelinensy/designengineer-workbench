@@ -121,15 +121,25 @@
     <!-- Main Panel -->
     <div class="main-panel">
 
-      <!-- Chat Panel -->
+      <!-- AI Assistant Panel -->
       <section class="chat-panel">
         <div class="chat-header">
-          <h2 id="chatTitle">Week 1 Lab 1A</h2>
-          <p id="chatSubtitle">Tokens + Canvas</p>
+          <h2>AI Assistant</h2>
+          <p id="chatSubtitle">Ask me anything about this lab</p>
         </div>
 
         <div class="chat-content" id="chatContent">
-          <!-- Chat messages will be injected here -->
+          <!-- AI chat messages will be injected here -->
+        </div>
+
+        <div class="chat-input-area">
+          <textarea
+            id="chatInput"
+            class="chat-input"
+            placeholder="Ask about tokens, spacing, colors, or request help with your code..."
+            rows="2"
+          ></textarea>
+          <button class="btn btn-primary" id="sendChatBtn">Send</button>
         </div>
       </section>
 
@@ -245,13 +255,26 @@
     // State Management
     // ───────────────────────────────────────────────────────────
     const state = {
-      currentLab: 'week-1-lab-a',
+      currentLab: null,
       currentStep: 0,
       currentTab: 'editor',
       currentFile: 'html',
       currentVideo: null,
-      sidebarCollapsed: false
+      sidebarCollapsed: false,
+      chatHistory: []
     };
+
+    // Load Gemini API key
+    let GEMINI_API_KEY = null;
+    fetch('.env')
+      .then(res => res.text())
+      .then(text => {
+        const match = text.match(/GEMINI_API_KEY=(.+)/);
+        if (match) GEMINI_API_KEY = match[1].trim();
+      })
+      .catch(() => {
+        console.warn('No .env file found - AI chat will not work');
+      });
 
     // ───────────────────────────────────────────────────────────
     // Lab Content Data
@@ -368,30 +391,30 @@
       loadEditorState(labId);
     }
 
-    function renderLabFromMarkdown(labId, markdown) {
-      const chatTitle = document.getElementById('chatTitle');
-      const chatSubtitle = document.getElementById('chatSubtitle');
-      const chatContent = document.getElementById('chatContent');
+    // Store lab content for AI context
+    const labContents = {};
 
-      // Extract title from lab ID
+    function renderLabFromMarkdown(labId, markdown) {
+      // Store content for AI context
+      labContents[labId] = markdown;
+
+      // Update subtitle to show current lab
       const titles = {
-        'week-1-lab-a': { title: 'Week 1 Lab 1A', subtitle: 'Tokens + Canvas' },
-        'week-1-lab-b': { title: 'Week 1 Lab 1B', subtitle: 'Premium Card' },
-        'week-2-lab-a': { title: 'Week 2 Lab 2A', subtitle: 'Bento Grid' },
-        'week-2-lab-b': { title: 'Week 2 Lab 2B', subtitle: 'Two-Column Panel' },
-        'week-3-lab-a': { title: 'Week 3 Lab 3A', subtitle: 'Accessible States' },
-        'week-3-lab-b': { title: 'Week 3 Lab 3B', subtitle: 'Non-JS Toggles' },
-        'week-4-lab-a': { title: 'Week 4 Lab 4A', subtitle: 'Blur Reveal Hero' },
-        'week-4-capstone': { title: 'Week 4 Capstone', subtitle: '±1px Fidelity Challenge' }
+        'week-1-lab-a': 'Week 1 Lab 1A: Tokens + Canvas',
+        'week-1-lab-b': 'Week 1 Lab 1B: Premium Card',
+        'week-2-lab-a': 'Week 2 Lab 2A: Bento Grid',
+        'week-2-lab-b': 'Week 2 Lab 2B: Two-Column Panel',
+        'week-3-lab-a': 'Week 3 Lab 3A: Accessible States',
+        'week-3-lab-b': 'Week 3 Lab 3B: Non-JS Toggles',
+        'week-4-lab-a': 'Week 4 Lab 4A: Blur Reveal Hero',
+        'week-4-capstone': 'Week 4 Capstone: ±1px Fidelity'
       };
 
-      const labInfo = titles[labId] || { title: 'Lab', subtitle: '' };
-      chatTitle.textContent = labInfo.title;
-      chatSubtitle.textContent = labInfo.subtitle;
-      chatContent.innerHTML = markdown;
+      const chatSubtitle = document.getElementById('chatSubtitle');
+      chatSubtitle.textContent = `Currently on: ${titles[labId] || labId}`;
 
-      // Add copy buttons to all code blocks
-      addCopyButtonsToCodeBlocks();
+      // Show welcome message for this lab
+      showAIWelcomeMessage(labId);
     }
 
     // ───────────────────────────────────────────────────────────
@@ -444,19 +467,56 @@
     }
 
     function renderWelcome() {
-      const chatTitle = document.getElementById('chatTitle');
       const chatSubtitle = document.getElementById('chatSubtitle');
       const chatContent = document.getElementById('chatContent');
 
-      chatTitle.textContent = 'Welcome';
-      chatSubtitle.textContent = 'Getting Started';
+      chatSubtitle.textContent = 'Select a lab to get started';
       chatContent.innerHTML = `
-        <div class="chat-message">
-          <h3>👋 Welcome to Design Engineering Workbench</h3>
-          <p>This is a self-paced course teaching designers to implement pixel-perfect components using HTML, CSS, and SVG.</p>
-          <p><strong>Getting Started:</strong> Select <strong>Week 1 Lab 1A: Tokens + Canvas</strong> from the sidebar to begin.</p>
+        <div class="chat-message assistant">
+          <div class="message-content">
+            <p>👋 <strong>Welcome to Design Engineering Workbench!</strong></p>
+            <p>I'm your AI assistant. I can help you with:</p>
+            <ul>
+              <li>Explaining HTML/CSS/SVG concepts</li>
+              <li>Reviewing your code</li>
+              <li>Suggesting improvements</li>
+              <li>Linking to video tutorials at specific timestamps</li>
+            </ul>
+            <p>Select a lab from the sidebar to begin, then ask me anything!</p>
+          </div>
         </div>
       `;
+    }
+
+    function showAIWelcomeMessage(labId) {
+      const chatContent = document.getElementById('chatContent');
+      const labTitles = {
+        'week-1-lab-a': 'design tokens and setting up your CSS foundation',
+        'week-1-lab-b': 'creating premium cards with stacked shadows',
+        'week-2-lab-a': 'building responsive Bento grid layouts',
+        'week-2-lab-b': 'designing two-column dashboard panels',
+        'week-3-lab-a': 'implementing accessible interactive states',
+        'week-3-lab-b': 'creating non-JS toggles and accordions',
+        'week-4-lab-a': 'animating blur reveal effects with SVG',
+        'week-4-capstone': 'achieving ±1px fidelity across breakpoints'
+      };
+
+      chatContent.innerHTML = `
+        <div class="chat-message assistant">
+          <div class="message-content">
+            <p>👋 Ready to learn about <strong>${labTitles[labId]}</strong>?</p>
+            <p>I can help you with:</p>
+            <ul>
+              <li>Step-by-step guidance</li>
+              <li>Code review and validation</li>
+              <li>Video references with timestamps</li>
+              <li>Debugging errors</li>
+            </ul>
+            <p>Ask me anything to get started!</p>
+          </div>
+        </div>
+      `;
+      state.chatHistory = [];
     }
 
     // ───────────────────────────────────────────────────────────
@@ -785,15 +845,26 @@
     }
 
     window.onYouTubeIframeAPIReady = function() {
+      // Start with Layout Land by default
       player = new YT.Player('youtubePlayer', {
         videoId: videoLibrary[0].videoId,
         playerVars: {
-          'playsinline': 1
+          'playsinline': 1,
+          'modestbranding': 1,
+          'rel': 0
+        },
+        events: {
+          'onReady': onPlayerReady
         }
       });
       state.currentVideo = videoLibrary[0].id;
       renderVideoPlaylist();
     };
+
+    function onPlayerReady(event) {
+      // Player is ready - timestamp controls will work now
+      console.log('YouTube player ready');
+    }
 
     function renderVideoPlaylist() {
       const playlistContainer = document.getElementById('playlistItems');
@@ -859,6 +930,148 @@
       const mins = Math.floor(seconds / 60);
       const secs = seconds % 60;
       return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // ───────────────────────────────────────────────────────────
+    // AI Chat System (Gemini API)
+    // ───────────────────────────────────────────────────────────
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChatBtn');
+    const chatContent = document.getElementById('chatContent');
+
+    sendChatBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    async function sendMessage() {
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      // Add user message to chat
+      appendMessage('user', message);
+      chatInput.value = '';
+
+      // Show thinking indicator
+      const thinkingId = appendMessage('system', 'AI is thinking...');
+
+      try {
+        const response = await callGeminiAPI(message);
+        // Remove thinking indicator
+        document.getElementById(thinkingId)?.remove();
+        // Add AI response
+        appendMessage('assistant', response);
+      } catch (error) {
+        document.getElementById(thinkingId)?.remove();
+        appendMessage('assistant', `Sorry, I encountered an error: ${error.message}. Make sure the Gemini API key is set up correctly.`);
+      }
+    }
+
+    function appendMessage(role, content) {
+      const messageId = `msg-${Date.now()}`;
+      const messageDiv = document.createElement('div');
+      messageDiv.id = messageId;
+      messageDiv.className = `chat-message ${role}`;
+
+      if (role === 'system') {
+        messageDiv.innerHTML = `<div class="message-content">${content}</div>`;
+      } else {
+        messageDiv.innerHTML = `<div class="message-content">${content}</div>`;
+      }
+
+      chatContent.appendChild(messageDiv);
+      chatContent.scrollTop = chatContent.scrollHeight;
+
+      return messageId;
+    }
+
+    async function callGeminiAPI(userMessage) {
+      if (!GEMINI_API_KEY) {
+        throw new Error('Gemini API key not loaded');
+      }
+
+      // Build context from current state
+      const context = buildContext();
+
+      const systemPrompt = `You are an expert design engineering tutor teaching HTML/CSS/SVG. You help learners build pixel-perfect components.
+
+Current Lab: ${context.currentLab || 'None selected'}
+Learner's HTML Code:
+\`\`\`html
+${context.htmlCode}
+\`\`\`
+
+Learner's CSS Code:
+\`\`\`css
+${context.cssCode}
+\`\`\`
+
+Available Video Resources:
+${context.videos}
+
+Your role:
+- Answer questions about the current lab
+- Review their code and suggest improvements
+- Link to video timestamps when relevant (format: "Watch [Video Name] at X:XX")
+- Teach best practices (tokens, accessibility, semantic HTML)
+- Be encouraging and specific
+
+Keep responses concise (2-3 paragraphs max). Use markdown for code snippets.`;
+
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: systemPrompt },
+                { text: `User question: ${userMessage}` }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 1024,
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated.';
+
+      // Store in history
+      state.chatHistory.push({ role: 'user', content: userMessage });
+      state.chatHistory.push({ role: 'assistant', content: aiResponse });
+
+      return aiResponse;
+    }
+
+    function buildContext() {
+      const htmlCode = htmlEditor?.value || '';
+      const cssCode = cssEditor?.value || '';
+
+      const videos = videoLibrary.map(v =>
+        `- ${v.title} (${v.author}): ${v.timestamps.map(t => `${t.label} at ${formatTime(t.time)}`).join(', ')}`
+      ).join('\n');
+
+      return {
+        currentLab: state.currentLab,
+        htmlCode,
+        cssCode,
+        videos
+      };
     }
 
     // ───────────────────────────────────────────────────────────

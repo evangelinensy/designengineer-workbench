@@ -378,6 +378,42 @@ body {
   padding: var(--space-5);
 }
 
+.chat-input-area {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border-subtle);
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-end;
+  background: var(--color-bg-elevated);
+}
+
+.chat-input {
+  flex: 1;
+  padding: var(--space-3);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 44px;
+  max-height: 120px;
+  outline: none;
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.chat-input:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-focus);
+  background: var(--color-bg-base);
+}
+
+.chat-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
 .chat-actions {
   padding: var(--space-4) var(--space-5);
   border-top: 1px solid var(--color-border-subtle);
@@ -840,8 +876,46 @@ body {
    Components — Chat Messages
    ─────────────────────────────────────────────────────────── */
 .chat-message {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-4);
   animation: slideIn var(--duration-base) var(--ease-smooth);
+}
+
+.chat-message.user {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.chat-message.user .message-content {
+  background: var(--color-accent-dim);
+  border: 1px solid var(--color-accent-primary);
+  color: var(--color-text-primary);
+  max-width: 80%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}
+
+.chat-message.assistant {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.chat-message.assistant .message-content {
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+  max-width: 85%;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+}
+
+.chat-message.system {
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+  margin: var(--space-2) 0;
 }
 
 @keyframes slideIn {
