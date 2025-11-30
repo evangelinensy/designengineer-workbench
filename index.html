@@ -389,6 +389,58 @@
       chatTitle.textContent = labInfo.title;
       chatSubtitle.textContent = labInfo.subtitle;
       chatContent.innerHTML = markdown;
+
+      // Add copy buttons to all code blocks
+      addCopyButtonsToCodeBlocks();
+    }
+
+    // ───────────────────────────────────────────────────────────
+    // Copy Buttons for Code Blocks
+    // ───────────────────────────────────────────────────────────
+    function addCopyButtonsToCodeBlocks() {
+      const codeBlocks = document.querySelectorAll('.chat-content pre');
+
+      codeBlocks.forEach(pre => {
+        // Skip if button already exists
+        if (pre.querySelector('.code-copy-btn')) return;
+
+        // Create copy button
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'code-copy-btn';
+        copyBtn.innerHTML = '⧉'; // Copy icon
+        copyBtn.setAttribute('data-tooltip', 'Copy');
+        copyBtn.setAttribute('aria-label', 'Copy code to clipboard');
+
+        // Add click handler
+        copyBtn.addEventListener('click', async () => {
+          const code = pre.querySelector('code');
+          const text = code ? code.textContent : pre.textContent;
+
+          try {
+            await navigator.clipboard.writeText(text);
+
+            // Visual feedback
+            copyBtn.innerHTML = '✓';
+            copyBtn.setAttribute('data-tooltip', 'Copied!');
+            copyBtn.classList.add('copied');
+
+            // Reset after 2 seconds
+            setTimeout(() => {
+              copyBtn.innerHTML = '⧉';
+              copyBtn.setAttribute('data-tooltip', 'Copy');
+              copyBtn.classList.remove('copied');
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy:', err);
+            copyBtn.setAttribute('data-tooltip', 'Failed to copy');
+            setTimeout(() => {
+              copyBtn.setAttribute('data-tooltip', 'Copy');
+            }, 2000);
+          }
+        });
+
+        pre.appendChild(copyBtn);
+      });
     }
 
     function renderWelcome() {
