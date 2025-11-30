@@ -168,8 +168,17 @@
             </div>
 
             <div class="editor-actions">
-              <button class="btn btn-secondary" id="resetBtn">Reset</button>
-              <button class="btn btn-primary" id="runBtn">Run ▶</button>
+              <div class="editor-actions-left">
+                <button class="btn btn-secondary" id="resetBtn">Reset</button>
+              </div>
+              <div class="editor-actions-right">
+                <button class="btn btn-secondary" id="checkBtn">Check My Code</button>
+                <button class="btn btn-primary" id="runBtn">Run ▶</button>
+              </div>
+            </div>
+
+            <div class="validation-feedback" id="validationFeedback">
+              <!-- Validation results will be injected here -->
             </div>
           </div>
         </div>
@@ -491,6 +500,172 @@
         saveTimeout = setTimeout(saveEditorState, 500);
       });
     });
+
+    // ───────────────────────────────────────────────────────────
+    // Code Validation System
+    // ───────────────────────────────────────────────────────────
+    const checkBtn = document.getElementById('checkBtn');
+    const validationFeedback = document.getElementById('validationFeedback');
+
+    // Validation rules per lab
+    const labValidations = {
+      'week-1-lab-a': {
+        css: [
+          {
+            pattern: /--color-bg-base:\s*#[0-9a-fA-F]{6}/,
+            message: 'Define --color-bg-base token',
+            hint: 'Example: --color-bg-base: #0a0a0b;'
+          },
+          {
+            pattern: /--color-text-primary:\s*rgba?\(/,
+            message: 'Define --color-text-primary with rgba',
+            hint: 'Use rgba for alpha-based text colors'
+          },
+          {
+            pattern: /--space-\d+:\s*[\d.]+rem/,
+            message: 'Define spacing scale tokens',
+            hint: 'Use rem units for spacing (e.g., --space-4: 1rem;)'
+          },
+          {
+            pattern: /--text-(xs|sm|base|lg|xl):\s*[\d.]+rem/,
+            message: 'Define type scale tokens',
+            hint: 'Create tokens for text sizes (e.g., --text-base: 1rem;)'
+          },
+          {
+            pattern: /--radius-(sm|md|lg):\s*\d+px/,
+            message: 'Define border radius tokens',
+            hint: 'Add radius tokens (e.g., --radius-md: 8px;)'
+          },
+          {
+            pattern: /body\s*{[^}]*background:\s*var\(--color-bg-base\)/,
+            message: 'Apply --color-bg-base to body background',
+            hint: 'Use var(--color-bg-base) instead of hard-coded color'
+          },
+          {
+            pattern: /body\s*{[^}]*font-size:\s*var\(--text-base\)/,
+            message: 'Apply --text-base to body font-size',
+            hint: 'Reference your type scale token'
+          }
+        ]
+      },
+      'week-1-lab-b': {
+        css: [
+          {
+            pattern: /--shadow-(sm|md|lg):/,
+            message: 'Define shadow elevation tokens',
+            hint: 'Create stacked shadows with multiple layers'
+          },
+          {
+            pattern: /box-shadow:\s*var\(--shadow-(sm|md|lg)\)/,
+            message: 'Use shadow tokens on card',
+            hint: 'Apply var(--shadow-lg) to .premium-card'
+          },
+          {
+            pattern: /border-radius:\s*var\(--radius-\w+\)/,
+            message: 'Use radius tokens (not hard-coded values)',
+            hint: 'Replace pixel values with var(--radius-lg)'
+          },
+          {
+            pattern: /:hover/,
+            message: 'Add hover state',
+            hint: 'Card should lift on hover with enhanced shadow'
+          },
+          {
+            pattern: /:focus-visible/,
+            message: 'Add focus-visible state',
+            hint: 'Use var(--shadow-focus) for keyboard navigation'
+          },
+          {
+            pattern: /@media\s*\(prefers-reduced-motion:\s*reduce\)/,
+            message: 'Add prefers-reduced-motion fallback',
+            hint: 'Disable animations for accessibility'
+          }
+        ]
+      }
+    };
+
+    checkBtn.addEventListener('click', () => {
+      const validation = validateCode(state.currentLab);
+      displayValidation(validation);
+    });
+
+    function validateCode(labId) {
+      const rules = labValidations[labId];
+      if (!rules) {
+        return {
+          summary: 'No validation rules for this lab yet.',
+          items: []
+        };
+      }
+
+      const cssCode = cssEditor.value;
+      const htmlCode = htmlEditor.value;
+      const results = [];
+
+      // Check CSS rules
+      if (rules.css) {
+        rules.css.forEach(rule => {
+          const passed = rule.pattern.test(cssCode);
+          results.push({
+            type: passed ? 'success' : 'error',
+            message: rule.message,
+            hint: rule.hint,
+            passed: passed
+          });
+        });
+      }
+
+      // Check HTML rules (if defined)
+      if (rules.html) {
+        rules.html.forEach(rule => {
+          const passed = rule.pattern.test(htmlCode);
+          results.push({
+            type: passed ? 'success' : 'error',
+            message: rule.message,
+            hint: rule.hint,
+            passed: passed
+          });
+        });
+      }
+
+      const passedCount = results.filter(r => r.passed).length;
+      const totalCount = results.length;
+
+      return {
+        summary: `${passedCount} of ${totalCount} checks passed`,
+        items: results,
+        allPassed: passedCount === totalCount
+      };
+    }
+
+    function displayValidation(validation) {
+      validationFeedback.innerHTML = '';
+
+      // Summary
+      const summaryClass = validation.allPassed ? 'success' :
+                          validation.items.filter(i => i.passed).length > 0 ? 'partial' :
+                          'error';
+
+      const summaryHTML = `
+        <div class="validation-summary ${summaryClass}">
+          ${validation.allPassed ? '✅' : '⚠️'} ${validation.summary}
+        </div>
+      `;
+
+      // Items
+      const itemsHTML = validation.items.map(item => `
+        <div class="validation-item ${item.type}">
+          <span class="validation-icon">${item.passed ? '✅' : '❌'}</span>
+          <div class="validation-message">
+            <strong>${item.message}</strong>
+            ${!item.passed && item.hint ? `<div style="color: var(--color-text-tertiary); margin-top: 0.25rem;">${item.hint}</div>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      validationFeedback.innerHTML = summaryHTML + itemsHTML;
+      validationFeedback.classList.add('show');
+    }
 
     // ───────────────────────────────────────────────────────────
     // Run Button — Update Preview
