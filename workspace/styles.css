@@ -1,0 +1,67 @@
+/* ═══════════════════════════════════════════════════════════
+   Learner Workspace — Starter Styles
+   ═══════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────────────────────────
+   Instructions:
+   1. Labs will guide you to implement design tokens below
+   2. Use these tokens throughout your component styles
+   3. Never use hard-coded values — always reference tokens
+   ─────────────────────────────────────────────────────────── */
+
+:root {
+  /* Typography tokens will be added in Lab 1A */
+
+  /* Spacing tokens will be added in Lab 1A */
+
+  /* Color tokens will be added in Lab 1A */
+
+  /* Radius tokens will be added in Lab 1A */
+
+  /* Shadow tokens will be added in Lab 1B */
+}
+
+/* ───────────────────────────────────────────────────────────
+   Base Styles
+   ─────────────────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  background: #0a0a0b;
+  color: white;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.workspace {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.workspace-header {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.workspace-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.workspace-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.lab-canvas {
+  /* Lab components will render here */
+  padding: 2rem;
+  min-height: 400px;
+}

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Engineering Workbench</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="workbench" id="workbench">
+
+    <!-- Header -->
+    <header class="workbench-header">
+      <div class="workbench-title">
+        <h1>Design Engineering Workbench</h1>
+        <span class="badge">HTML/CSS/SVG</span>
+      </div>
+    </header>
+
+    <!-- Sidebar — Lab Navigator -->
+    <aside class="sidebar" id="sidebar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <span class="sidebar-toggle-icon">◀</span>
+        <span class="sidebar-toggle-text">Labs</span>
+      </button>
+
+      <nav class="sidebar-content" id="sidebarContent">
+        <!-- Week 1 -->
+        <div class="lab-week expanded" data-week="1">
+          <button class="lab-week-header" aria-expanded="true">
+            <span>Week 1: Foundations</span>
+            <span class="lab-week-icon">▶</span>
+          </button>
+          <ul class="lab-list">
+            <li class="lab-item">
+              <a href="#" class="lab-link" data-lab="week-1-lab-a">
+                <span>Lab 1A: Tokens + Canvas</span>
+                <span class="lab-status">○</span>
+              </a>
+            </li>
+            <li class="lab-item">
+              <a href="#" class="lab-link" data-lab="week-1-lab-b">
+                <span>Lab 1B: Premium Card</span>
+                <span class="lab-status">○</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Week 2 -->
+        <div class="lab-week" data-week="2">
+          <button class="lab-week-header" aria-expanded="false">
+            <span>Week 2: Layout Systems</span>
+            <span class="lab-week-icon">▶</span>
+          </button>
+          <ul class="lab-list">
+            <li class="lab-item">
+              <a href="#" class="lab-link" data-lab="week-2-lab-a">
+                <span>Lab 2A: Bento Grid</span>
+                <span class="lab-status">○</span>
+              </a>
+            </li>
+            <li class="lab-item">
+              <a href="#" class="lab-link" data-lab="week-2-lab-b">
+                <span>Lab 2B: Two-Column Panel</span>
+                <span class="lab-status">○</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Week 3 -->
+        <div class="lab-week" data-week="3">
+          <button class="lab-week-header" aria-expanded="false">
+            <span>Week 3: States & A11y</span>
+            <span class="lab-week-icon">▶</span>
+          </button>
+          <ul class="lab-list">
+            <li class="lab-item">
+              <a href="#" class="lab-link" data-lab="week-3-lab-a">
+                <span>Lab 3A: Accessible States</span>
+                <span class="lab-status">○</span>
+              </a>
+            </li>
+            <li class="lab-item">
+              <a href="#" class="lab-link" data-lab="week-3-lab-b">
+                <span>Lab 3B: Non-JS Toggles</span>
+                <span class="lab-status">○</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Week 4 -->
+        <div class="lab-week" data-week="4">
+          <button class="lab-week-header" aria-expanded="false">
+            <span>Week 4: Motion & SVG</span>
+            <span class="lab-week-icon">▶</span>
+          </button>
+          <ul class="lab-list">
+            <li class="lab-item">
+              <a href="#" class="lab-link" data-lab="week-4-lab-a">
+                <span>Lab 4A: Blur Reveal Hero</span>
+                <span class="lab-status">○</span>
+              </a>
+            </li>
+            <li class="lab-item">
+              <a href="#" class="lab-link" data-lab="week-4-capstone">
+                <span>Capstone: ±1px Fidelity</span>
+                <span class="lab-status">○</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Panel -->
+    <div class="main-panel">
+
+      <!-- Chat Panel -->
+      <section class="chat-panel">
+        <div class="chat-header">
+          <h2 id="chatTitle">Week 1 Lab 1A</h2>
+          <p id="chatSubtitle">Tokens + Canvas</p>
+        </div>
+
+        <div class="chat-content" id="chatContent">
+          <!-- Chat messages will be injected here -->
+        </div>
+      </section>
+
+      <!-- Work Area — Tabs -->
+      <section class="work-area">
+        <div class="tab-bar">
+          <button class="tab-button active" data-tab="editor">Editor</button>
+          <button class="tab-button" data-tab="preview">Preview</button>
+          <button class="tab-button" data-tab="video">Video</button>
+        </div>
+
+        <!-- Editor Tab -->
+        <div class="tab-content active" id="editorTab">
+          <div class="editor-container">
+            <div class="editor-subtabs">
+              <button class="editor-subtab active" data-file="html">index.html</button>
+              <button class="editor-subtab" data-file="css">styles.css</button>
+            </div>
+
+            <div class="editor-area active" data-editor="html">
+              <textarea
+                class="code-editor"
+                id="htmlEditor"
+                placeholder="Write your HTML here..."
+                spellcheck="false"
+              ></textarea>
+            </div>
+
+            <div class="editor-area" data-editor="css">
+              <textarea
+                class="code-editor"
+                id="cssEditor"
+                placeholder="Write your CSS here..."
+                spellcheck="false"
+              ></textarea>
+            </div>
+
+            <div class="editor-actions">
+              <button class="btn btn-secondary" id="resetBtn">Reset</button>
+              <button class="btn btn-primary" id="runBtn">Run ▶</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview Tab -->
+        <div class="tab-content" id="previewTab">
+          <div class="preview-container">
+            <iframe class="preview-frame" id="previewFrame" title="Preview"></iframe>
+          </div>
+        </div>
+
+        <!-- Video Tab -->
+        <div class="tab-content" id="videoTab">
+          <div class="video-container">
+            <div class="video-player">
+              <div class="video-embed" id="videoEmbed">
+                <iframe
+                  id="youtubePlayer"
+                  src=""
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                ></iframe>
+              </div>
+
+              <div class="timestamp-controls" id="timestampControls">
+                <!-- Timestamp buttons will be injected here -->
+              </div>
+            </div>
+
+            <aside class="video-playlist">
+              <h3 class="playlist-header">Video Library</h3>
+              <div id="playlistItems">
+                <!-- Playlist items will be injected here -->
+              </div>
+            </aside>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- Footer — Sources -->
+    <footer class="workbench-footer">
+      <span class="footer-label">Sources</span>
+      <div class="footer-links">
+        <a href="https://animations.dev" target="_blank" class="footer-link">animations.dev</a>
+        <a href="https://devouringdetails.com" target="_blank" class="footer-link">devouringdetails.com</a>
+        <a href="https://svg.guide" target="_blank" class="footer-link">svg.guide</a>
+        <a href="https://maven.com/pixeljanitor/uiengineering-101-for-designers" target="_blank" class="footer-link">UI Engineering 101</a>
+        <a href="https://refactoringui.com" target="_blank" class="footer-link">Refactoring UI</a>
+        <a href="https://vercel.com/design/guidelines" target="_blank" class="footer-link">Vercel Guidelines</a>
+        <a href="https://interfaces.rauno.me" target="_blank" class="footer-link">interfaces.rauno.me</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    // Workbench Shell — Vanilla JS
+    // ═══════════════════════════════════════════════════════════
+
+    // ───────────────────────────────────────────────────────────
+    // State Management
+    // ───────────────────────────────────────────────────────────
+    const state = {
+      currentLab: 'week-1-lab-a',
+      currentStep: 0,
+      currentTab: 'editor',
+      currentFile: 'html',
+      currentVideo: null,
+      sidebarCollapsed: false
+    };
+
+    // ───────────────────────────────────────────────────────────
+    // Lab Content Data
+    // ───────────────────────────────────────────────────────────
+    const labContent = {};
+
+    // ───────────────────────────────────────────────────────────
+    // Video Library Data
+    // ───────────────────────────────────────────────────────────
+    const videoLibrary = [
+      {
+        id: 'layout-land',
+        title: 'Layout Land',
+        author: 'Jen Simmons',
+        videoId: 'FEnRpy9Xfes', // First video from playlist
+        description: 'CSS Grid and intrinsic layout',
+        timestamps: [
+          { label: 'Grid Basics', time: 0 },
+          { label: 'Template Areas', time: 180 },
+          { label: 'Auto-fit & Minmax', time: 420 }
+        ]
+      },
+      {
+        id: 'cassie-svg',
+        title: 'Interactive Web Animation with SVG',
+        author: 'Cassie Evans',
+        videoId: 'U2zxeKWkgds',
+        description: 'Masks, filters, and easing',
+        timestamps: [
+          { label: 'SVG Basics', time: 0 },
+          { label: 'Masks & Filters', time: 220 },
+          { label: 'Easing Functions', time: 540 }
+        ]
+      },
+      {
+        id: 'reduced-motion',
+        title: 'Reduce Motion & Dark Mode',
+        author: 'Kevin Powell',
+        videoId: 'hObPr5IfFVU',
+        description: 'prefers-reduced-motion in CSS',
+        timestamps: [
+          { label: 'Media Queries', time: 0 },
+          { label: 'Reduced Motion', time: 135 },
+          { label: 'Implementation', time: 280 }
+        ]
+      }
+    ];
+
+    // ───────────────────────────────────────────────────────────
+    // Sidebar Toggle
+    // ───────────────────────────────────────────────────────────
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const workbench = document.getElementById('workbench');
+
+    sidebarToggle.addEventListener('click', () => {
+      state.sidebarCollapsed = !state.sidebarCollapsed;
+      workbench.classList.toggle('sidebar-collapsed', state.sidebarCollapsed);
+      localStorage.setItem('sidebarCollapsed', state.sidebarCollapsed);
+    });
+
+    // Restore sidebar state
+    const savedSidebarState = localStorage.getItem('sidebarCollapsed');
+    if (savedSidebarState === 'true') {
+      state.sidebarCollapsed = true;
+      workbench.classList.add('sidebar-collapsed');
+    }
+
+    // ───────────────────────────────────────────────────────────
+    // Lab Week Accordion
+    // ───────────────────────────────────────────────────────────
+    document.querySelectorAll('.lab-week-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const week = header.closest('.lab-week');
+        const isExpanded = week.classList.contains('expanded');
+
+        week.classList.toggle('expanded');
+        header.setAttribute('aria-expanded', !isExpanded);
+      });
+    });
+
+    // ───────────────────────────────────────────────────────────
+    // Lab Selection
+    // ───────────────────────────────────────────────────────────
+    document.querySelectorAll('.lab-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const labId = link.dataset.lab;
+
+        // Update active state
+        document.querySelectorAll('.lab-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+
+        // Load lab content
+        loadLab(labId);
+      });
+    });
+
+    function loadLab(labId) {
+      state.currentLab = labId;
+      state.currentStep = 0;
+
+      // Load lab content from markdown files
+      fetch(`content/weeks/${labId}.md`)
+        .then(res => res.text())
+        .then(markdown => {
+          renderLabFromMarkdown(labId, markdown);
+        })
+        .catch(err => {
+          console.warn(`Lab content not found for ${labId}, showing welcome`);
+          renderWelcome();
+        });
+
+      // Load saved code for this lab
+      loadEditorState(labId);
+    }
+
+    function renderLabFromMarkdown(labId, markdown) {
+      const chatTitle = document.getElementById('chatTitle');
+      const chatSubtitle = document.getElementById('chatSubtitle');
+      const chatContent = document.getElementById('chatContent');
+
+      // Extract title from lab ID
+      const titles = {
+        'week-1-lab-a': { title: 'Week 1 Lab 1A', subtitle: 'Tokens + Canvas' },
+        'week-1-lab-b': { title: 'Week 1 Lab 1B', subtitle: 'Premium Card' },
+        'week-2-lab-a': { title: 'Week 2 Lab 2A', subtitle: 'Bento Grid' },
+        'week-2-lab-b': { title: 'Week 2 Lab 2B', subtitle: 'Two-Column Panel' },
+        'week-3-lab-a': { title: 'Week 3 Lab 3A', subtitle: 'Accessible States' },
+        'week-3-lab-b': { title: 'Week 3 Lab 3B', subtitle: 'Non-JS Toggles' },
+        'week-4-lab-a': { title: 'Week 4 Lab 4A', subtitle: 'Blur Reveal Hero' },
+        'week-4-capstone': { title: 'Week 4 Capstone', subtitle: '±1px Fidelity Challenge' }
+      };
+
+      const labInfo = titles[labId] || { title: 'Lab', subtitle: '' };
+      chatTitle.textContent = labInfo.title;
+      chatSubtitle.textContent = labInfo.subtitle;
+      chatContent.innerHTML = markdown;
+    }
+
+    function renderWelcome() {
+      const chatTitle = document.getElementById('chatTitle');
+      const chatSubtitle = document.getElementById('chatSubtitle');
+      const chatContent = document.getElementById('chatContent');
+
+      chatTitle.textContent = 'Welcome';
+      chatSubtitle.textContent = 'Getting Started';
+      chatContent.innerHTML = `
+        <div class="chat-message">
+          <h3>👋 Welcome to Design Engineering Workbench</h3>
+          <p>This is a self-paced course teaching designers to implement pixel-perfect components using HTML, CSS, and SVG.</p>
+          <p><strong>Getting Started:</strong> Select <strong>Week 1 Lab 1A: Tokens + Canvas</strong> from the sidebar to begin.</p>
+        </div>
+      `;
+    }
+
+    // ───────────────────────────────────────────────────────────
+    // Tab Switching
+    // ───────────────────────────────────────────────────────────
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabId = btn.dataset.tab;
+
+        // Update active states
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById(`${tabId}Tab`).classList.add('active');
+
+        state.currentTab = tabId;
+      });
+    });
+
+    // ───────────────────────────────────────────────────────────
+    // Editor Sub-tabs
+    // ───────────────────────────────────────────────────────────
+    document.querySelectorAll('.editor-subtab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const fileType = btn.dataset.file;
+
+        // Update active states
+        document.querySelectorAll('.editor-subtab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        document.querySelectorAll('.editor-area').forEach(a => a.classList.remove('active'));
+        document.querySelector(`[data-editor="${fileType}"]`).classList.add('active');
+
+        state.currentFile = fileType;
+      });
+    });
+
+    // ───────────────────────────────────────────────────────────
+    // Editor State Management (localStorage)
+    // ───────────────────────────────────────────────────────────
+    const htmlEditor = document.getElementById('htmlEditor');
+    const cssEditor = document.getElementById('cssEditor');
+
+    function saveEditorState() {
+      const key = `lab-${state.currentLab}`;
+      const data = {
+        html: htmlEditor.value,
+        css: cssEditor.value
+      };
+      localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    function loadEditorState(labId) {
+      const key = `lab-${labId}`;
+      const saved = localStorage.getItem(key);
+
+      if (saved) {
+        const data = JSON.parse(saved);
+        htmlEditor.value = data.html || '';
+        cssEditor.value = data.css || '';
+      } else {
+        // Load starter files
+        loadStarterFiles();
+      }
+    }
+
+    function loadStarterFiles() {
+      fetch('workspace/index.html')
+        .then(res => res.text())
+        .then(html => {
+          htmlEditor.value = html;
+        })
+        .catch(() => {
+          htmlEditor.value = '';
+        });
+
+      fetch('workspace/styles.css')
+        .then(res => res.text())
+        .then(css => {
+          cssEditor.value = css;
+        })
+        .catch(() => {
+          cssEditor.value = '';
+        });
+    }
+
+    // Auto-save on change (debounced)
+    let saveTimeout;
+    [htmlEditor, cssEditor].forEach(editor => {
+      editor.addEventListener('input', () => {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(saveEditorState, 500);
+      });
+    });
+
+    // ───────────────────────────────────────────────────────────
+    // Run Button — Update Preview
+    // ───────────────────────────────────────────────────────────
+    const runBtn = document.getElementById('runBtn');
+    const previewFrame = document.getElementById('previewFrame');
+
+    runBtn.addEventListener('click', () => {
+      saveEditorState();
+      updatePreview();
+
+      // Auto-switch to Preview tab
+      document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-tab="preview"]').classList.add('active');
+
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.getElementById('previewTab').classList.add('active');
+    });
+
+    function updatePreview() {
+      const html = htmlEditor.value;
+      const css = cssEditor.value;
+
+      const fullHTML = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>${css}</style>
+        </head>
+        <body>
+          ${html}
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob([fullHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      previewFrame.src = url;
+    }
+
+    // ───────────────────────────────────────────────────────────
+    // Reset Button
+    // ───────────────────────────────────────────────────────────
+    const resetBtn = document.getElementById('resetBtn');
+
+    resetBtn.addEventListener('click', () => {
+      if (confirm('Reset to starter files? Your current work will be lost.')) {
+        localStorage.removeItem(`lab-${state.currentLab}`);
+        loadStarterFiles();
+      }
+    });
+
+    // ───────────────────────────────────────────────────────────
+    // Video Tab — YouTube API Integration
+    // ───────────────────────────────────────────────────────────
+    let player;
+
+    function loadYouTubeAPI() {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+
+    window.onYouTubeIframeAPIReady = function() {
+      player = new YT.Player('youtubePlayer', {
+        videoId: videoLibrary[0].videoId,
+        playerVars: {
+          'playsinline': 1
+        }
+      });
+      state.currentVideo = videoLibrary[0].id;
+      renderVideoPlaylist();
+    };
+
+    function renderVideoPlaylist() {
+      const playlistContainer = document.getElementById('playlistItems');
+
+      playlistContainer.innerHTML = videoLibrary.map(video => `
+        <div class="playlist-item ${state.currentVideo === video.id ? 'active' : ''}" data-video-id="${video.id}">
+          <div class="playlist-item-title">${video.title}</div>
+          <div class="playlist-item-author">${video.author}</div>
+        </div>
+      `).join('');
+
+      // Add click handlers
+      document.querySelectorAll('.playlist-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const videoId = item.dataset.videoId;
+          loadVideo(videoId);
+        });
+      });
+
+      // Render timestamps for active video
+      renderTimestamps();
+    }
+
+    function loadVideo(videoId) {
+      const video = videoLibrary.find(v => v.id === videoId);
+      if (!video) return;
+
+      state.currentVideo = videoId;
+
+      if (player && player.loadVideoById) {
+        player.loadVideoById(video.videoId);
+      }
+
+      renderVideoPlaylist();
+      renderTimestamps();
+    }
+
+    function renderTimestamps() {
+      const video = videoLibrary.find(v => v.id === state.currentVideo);
+      if (!video) return;
+
+      const timestampContainer = document.getElementById('timestampControls');
+
+      timestampContainer.innerHTML = video.timestamps.map(ts => `
+        <button class="btn-timestamp" data-time="${ts.time}">
+          ${ts.label} · ${formatTime(ts.time)}
+        </button>
+      `).join('');
+
+      // Add click handlers
+      document.querySelectorAll('.btn-timestamp').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const time = parseInt(btn.dataset.time);
+          if (player && player.seekTo) {
+            player.seekTo(time, true);
+            player.playVideo();
+          }
+        });
+      });
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // ───────────────────────────────────────────────────────────
+    // Initialization
+    // ───────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      loadYouTubeAPI();
+      renderWelcome();
+      loadStarterFiles();
+    });
+
+  </script>
+</body>
+</html>
