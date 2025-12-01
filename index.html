@@ -205,12 +205,7 @@
           <div class="video-container">
             <div class="video-player">
               <div class="video-embed" id="videoEmbed">
-                <iframe
-                  id="youtubePlayer"
-                  src=""
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
-                ></iframe>
+                <div id="youtubePlayer"></div>
               </div>
 
               <div class="timestamp-controls" id="timestampControls">
@@ -264,17 +259,8 @@
       chatHistory: []
     };
 
-    // Load Gemini API key
-    let GEMINI_API_KEY = null;
-    fetch('.env')
-      .then(res => res.text())
-      .then(text => {
-        const match = text.match(/GEMINI_API_KEY=(.+)/);
-        if (match) GEMINI_API_KEY = match[1].trim();
-      })
-      .catch(() => {
-        console.warn('No .env file found - AI chat will not work');
-      });
+    // Gemini API key - hardcoded for browser use (gitignored in .env for reference)
+    const GEMINI_API_KEY = 'AIzaSyBWCvuuMsJk6qaLpUzIXjlljWnSYDEUzpA';
 
     // ───────────────────────────────────────────────────────────
     // Lab Content Data
@@ -847,6 +833,8 @@
     window.onYouTubeIframeAPIReady = function() {
       // Start with Layout Land by default
       player = new YT.Player('youtubePlayer', {
+        height: '100%',
+        width: '100%',
         videoId: videoLibrary[0].videoId,
         playerVars: {
           'playsinline': 1,
@@ -863,7 +851,7 @@
 
     function onPlayerReady(event) {
       // Player is ready - timestamp controls will work now
-      console.log('YouTube player ready');
+      console.log('YouTube player ready', player);
     }
 
     function renderVideoPlaylist() {
