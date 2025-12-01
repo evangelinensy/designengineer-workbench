@@ -259,8 +259,7 @@
       chatHistory: []
     };
 
-    // Gemini API key - hardcoded for browser use (gitignored in .env for reference)
-    const GEMINI_API_KEY = 'AIzaSyBWCvuuMsJk6qaLpUzIXjlljWnSYDEUzpA';
+    // API key is handled server-side via proxy to avoid exposure
 
     // ───────────────────────────────────────────────────────────
     // Lab Content Data
@@ -977,58 +976,18 @@
     }
 
     async function callGeminiAPI(userMessage) {
-      if (!GEMINI_API_KEY) {
-        throw new Error('Gemini API key not loaded');
-      }
-
       // Build context from current state
       const context = buildContext();
 
-      const systemPrompt = `You are an expert design engineering tutor teaching HTML/CSS/SVG. You help learners build pixel-perfect components.
-
-Current Lab: ${context.currentLab || 'None selected'}
-Learner's HTML Code:
-\`\`\`html
-${context.htmlCode}
-\`\`\`
-
-Learner's CSS Code:
-\`\`\`css
-${context.cssCode}
-\`\`\`
-
-Available Video Resources:
-${context.videos}
-
-Your role:
-- Answer questions about the current lab
-- Review their code and suggest improvements
-- Link to video timestamps when relevant (format: "Watch [Video Name] at X:XX")
-- Teach best practices (tokens, accessibility, semantic HTML)
-- Be encouraging and specific
-
-Keep responses concise (2-3 paragraphs max). Use markdown for code snippets.`;
-
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-      const response = await fetch(apiUrl, {
+      // Call our backend proxy instead of Gemini directly
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                { text: systemPrompt },
-                { text: `User question: ${userMessage}` }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 1024,
-          }
+          message: userMessage,
+          context: context
         })
       });
 
@@ -1037,7 +996,12 @@ Keep responses concise (2-3 paragraphs max). Use markdown for code snippets.`;
       }
 
       const data = await response.json();
-      const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated.';
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      const aiResponse = data.response || 'No response generated.';
 
       // Store in history
       state.chatHistory.push({ role: 'user', content: userMessage });

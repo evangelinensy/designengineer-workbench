@@ -17,12 +17,20 @@ A self-paced HTML/CSS/SVG course teaching designers to implement pixel-perfect c
 
 ## 🚀 Getting Started
 
-1. **Start local server:**
+1. **Install Node.js** (if not already installed)
+   - Download from https://nodejs.org/
+
+2. **Start the server:**
    ```bash
-   python3 -m http.server 8000
+   node server.js
    ```
 
-2. **Open workbench in browser:**
+   This starts a Node.js server that:
+   - Serves static files (HTML/CSS/JS)
+   - Proxies Gemini API requests (keeps API key secret)
+   - Runs on http://localhost:8000
+
+3. **Open workbench in browser:**
    ```
    http://localhost:8000
    ```
